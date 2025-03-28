@@ -1602,11 +1602,14 @@
             
             function reiniciarFormulario() {
                 // Ocultar todos los formularios
+                // Ocultar todos los formularios excepto el principal
                 loginForm.style.display = "block";
-                opcionesForm.style.display = "none";
-                proponerForm.style.display = "none";
-                votarForm.style.display = "none";
-                consultaPropuestasDiv.style.display = "none";
+                    
+                    // Asegurar que todos los demás formularios estén ocultos
+                    if (opcionesForm) opcionesForm.style.display = "none";
+                    proponerForm.style.display = "none";
+                    votarForm.style.display = "none";
+                    consultaPropuestasDiv.style.display = "none";
                 
                 // Resetear barra de progreso
                 progressBar.style.width = "33%";
@@ -1618,6 +1621,7 @@
                 // Limpiar campos
                 empleadoInput.value = "";
                 nombreInput.value = "";
+                document.getElementById('tienda-search').value = ""; // Añadir esta línea
                 tiendaSelect.value = "";
                 propuestaInput.value = "";
                 
