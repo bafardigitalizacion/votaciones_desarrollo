@@ -218,16 +218,15 @@
         }
         
         .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        margin-top: 40px; /* Dar espacio para el botón */
+        position: relative;
+    }
         
-        .logo-text {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            letter-spacing: -1px;
-        }
+    .logo-img {
+        width: 40%; /* Reducir el tamaño */
+        max-width: 180px;
+        margin-top: 5px;
+    }
 
         /* Estilo para la imagen logo */
 /* Estilo para la imagen logo */
@@ -504,10 +503,10 @@
                     cursor: pointer;
                     transition: var(--transition);
                     z-index: 10;
-                    width: auto; /* Añadir esta línea para que no ocupe todo el ancho */
+                    width: auto; /* Para que no ocupe todo el ancho */
                 }
 
-.help-button:hover {
+                .help-button:hover {
     background-color: var(--primary-hover);
     transform: translateY(-2px);
 }
@@ -612,12 +611,16 @@
 /* Adaptación para móviles */
 @media (max-width: 576px) {
     .help-button {
-        top: 15px;
-        right: 15px;
-        padding: 6px 12px;
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
         font-size: 12px;
+        /* Reducir el tamaño para que no tape el logo */
+        position: absolute;
+        z-index: 100; /* Valor más alto para asegurar que esté por encima */
     }
-    
+
+
     .modal-content {
     background-color: #fefefe;
     margin: 10% auto; /* CAMBIA ESTO: de 15% a 10% */
@@ -641,9 +644,9 @@
   <button id="help-button" class="help-button">¿Cómo participar?</button>
     
   <div class="logo">
-      <img src="logograndeponlenombrealaapp.jpg" alt="Logo VotApp" class="logo-img">
-      <div class="logo-subtitle">¡Sistema de Votación para la App del Gerente!</div>
-  </div>
+    <img src="logograndeponlenombrealaapp.jpg" alt="Logo VotApp" class="logo-img">
+    <div class="logo-subtitle">¡Sistema de Votación para la App del Gerente!</div>
+</div>
         
         <div class="progress-bar">
             <div class="progress" id="progress"></div>
