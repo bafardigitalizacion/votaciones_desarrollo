@@ -751,6 +751,7 @@
             
             <div id="no-propuestas-msg" style="display: none; text-align: center; margin: 20px 0;">
                 <p>No hay propuestas registradas actualmente.</p>
+                <p><strong>¡Sé el primero en proponer un nombre para la app!</strong></p>
             </div>
             
             <button id="volver-inicio" class="secondary-btn">Volver al inicio</button>
@@ -1052,66 +1053,66 @@ document.getElementById('proponer-propio').addEventListener('click', mostrarPant
 
                 // Funciones para consulta de propuestas
                 function mostrarConsultaPropuestas() {
-                    mostrarCargando(true);
-                    
-                    // Cargar propuestas desde Firestore
-                    const propuestasRef = collection(db, 'propuestas');
-                    const q = query(propuestasRef, orderBy('votos', 'desc'));
-                    
-                    getDocs(q)
-                        .then((snapshot) => {
-                            // Ocultar formulario de login
-                            loginForm.style.display = "none";
-                            
-                            // Preparar contenedor de propuestas
-                            propuestasConsulta.innerHTML = "";
-                            
-                            if (snapshot.empty) {
-                                // Mostrar mensaje de que no hay propuestas
-                                noPropuestasMsg.style.display = "block";
-                                propuestasConsulta.style.display = "none";
-                                mostrarCargando(false);
-                            } else {
-                                // Ocultar mensaje de no propuestas
-                                noPropuestasMsg.style.display = "none";
-                                propuestasConsulta.style.display = "block";
+                                mostrarCargando(true);
                                 
-                                // Crear elementos para cada propuesta sin tooltips individuales
-                                snapshot.forEach((doc) => {
-                                    const propuesta = {
-                                        id: doc.id,
-                                        ...doc.data()
-                                    };
-                                    
-                                    const propuestaElement = document.createElement('div');
-                                    propuestaElement.className = 'nombre-item';
-                                    
-                                    propuestaElement.innerHTML = `
-                                        <div class="nombre-info">
-                                            <strong>${propuesta.nombre}</strong>
-                                            <span class="votos" data-propuesta="${propuesta.id}">${propuesta.votos} votos</span>
-                                        </div>
-                                    `;
-                                    propuestasConsulta.appendChild(propuestaElement);
-                                });
+                                // Cargar propuestas desde Firestore
+                                const propuestasRef = collection(db, 'propuestas');
+                                const q = query(propuestasRef, orderBy('votos', 'desc'));
                                 
-                                // Mostrar la sección de consulta
-                                mostrarCargando(false);
-                                consultaPropuestasDiv.style.display = "block";
-                                consultaPropuestasDiv.classList.add('fade-in');
-                                
-                                // Agregar eventos de clic a los botones de votos
-                                document.querySelectorAll('#propuestas-consulta .votos').forEach(elemento => {
-                                    elemento.addEventListener('click', toggleTooltip);
-                                });
+                                getDocs(q)
+                                    .then((snapshot) => {
+                                        // Ocultar formulario de login
+                                        loginForm.style.display = "none";
+                                        
+                                        // Preparar contenedor de propuestas
+                                        propuestasConsulta.innerHTML = "";
+                                        
+                                        // Mostrar la sección de consulta siempre (independientemente de si hay propuestas o no)
+                                        consultaPropuestasDiv.style.display = "block";
+                                        consultaPropuestasDiv.classList.add('fade-in');
+                                        
+                                        if (snapshot.empty) {
+                                            // Mostrar mensaje de que no hay propuestas
+                                            noPropuestasMsg.style.display = "block";
+                                            propuestasConsulta.style.display = "none";
+                                        } else {
+                                            // Ocultar mensaje de no propuestas
+                                            noPropuestasMsg.style.display = "none";
+                                            propuestasConsulta.style.display = "block";
+                                            
+                                            // Crear elementos para cada propuesta sin tooltips individuales
+                                            snapshot.forEach((doc) => {
+                                                const propuesta = {
+                                                    id: doc.id,
+                                                    ...doc.data()
+                                                };
+                                                
+                                                const propuestaElement = document.createElement('div');
+                                                propuestaElement.className = 'nombre-item';
+                                                
+                                                propuestaElement.innerHTML = `
+                                                    <div class="nombre-info">
+                                                        <strong>${propuesta.nombre}</strong>
+                                                        <span class="votos" data-propuesta="${propuesta.id}">${propuesta.votos} votos</span>
+                                                    </div>
+                                                `;
+                                                propuestasConsulta.appendChild(propuestaElement);
+                                            });
+                                            
+                                            // Agregar eventos de clic a los botones de votos
+                                            document.querySelectorAll('#propuestas-consulta .votos').forEach(elemento => {
+                                                elemento.addEventListener('click', toggleTooltip);
+                                            });
+                                        }
+                                        
+                                        mostrarCargando(false);
+                                    })
+                                    .catch((error) => {
+                                        mostrarCargando(false);
+                                        console.error("Error al cargar propuestas:", error);
+                                        alert("Error al cargar las propuestas. Intenta nuevamente.");
+                                    });
                             }
-                        })
-                        .catch((error) => {
-                            mostrarCargando(false);
-                            console.error("Error al cargar propuestas:", error);
-                            alert("Error al cargar las propuestas. Intenta nuevamente.");
-                        });
-                }
 
 
                 function volverAlInicio() {
