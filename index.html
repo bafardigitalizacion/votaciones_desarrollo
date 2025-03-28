@@ -738,7 +738,8 @@
             </div>
             
             <button id="enviar-voto">Enviar Voto</button>
-            <div id="voto-success" class="success"></div>
+            <button id="proponer-propio" class="secondary-btn">Proponer un nombre nuevo</button>
+            <button id="cancelar-voto" class="secondary-btn">Cancelar y volver</button>
         </div>
     
         <div id="consulta-propuestas" class="options">
@@ -854,7 +855,7 @@
             
             // Mensajes de éxito
             const propuestaSuccess = document.getElementById('propuesta-success');
-            const votoSuccess = document.getElementById('voto-success');
+           
             
             // Variables globales
             let propuestas = [];
@@ -1028,11 +1029,13 @@
                             cargarTiendas();
             
             // Eventos
-            continuarBtn.addEventListener('click', validarLogin);
-            
-            enviarPropuestaBtn.addEventListener('click', guardarPropuesta);
-            enviarVotoBtn.addEventListener('click', guardarVoto);
-
+            // Eventos
+                 // Eventos
+continuarBtn.addEventListener('click', validarLogin);
+enviarPropuestaBtn.addEventListener('click', guardarPropuesta);
+enviarVotoBtn.addEventListener('click', guardarVoto);
+document.getElementById('cancelar-voto').addEventListener('click', reiniciarFormulario);
+document.getElementById('proponer-propio').addEventListener('click', mostrarPantallaProponer);
 
             // Elementos DOM adicionales
                 const verPropuestasBtn = document.getElementById('ver-propuestas');
@@ -1117,6 +1120,21 @@
                     loginForm.style.display = "block";
                     loginForm.classList.add('fade-in');
                 }
+
+
+
+                // Función para mostrar la pantalla de proponer un nombre
+                function mostrarPantallaProponer() {
+                    // Ocultar la pantalla de votación
+                    votarForm.style.display = "none";
+                    
+                    // Mostrar la pantalla para proponer nombre
+                    proponerForm.style.display = "block";
+                    proponerForm.classList.add('fade-in');
+                    
+                    // Actualizar barra de progreso
+                    progressBar.style.width = "100%";
+                }
             
             // Funciones
             function mostrarCargando(mostrar = true) {
@@ -1187,15 +1205,13 @@
                                     
                                     if (snapshot.empty) {
                                         mostrarCargando(false);
-                                        alert("No hay propuestas disponibles para votar. Primero debes proponer un nombre.");
-                                        
-                                        // Si no hay propuestas, mostrar directamente el formulario para proponer
+                                        // Ir directamente a proponer sin mostrar alerta
                                         proponerForm.style.display = "block";
                                         proponerForm.classList.add('fade-in');
                                         progressBar.style.width = "100%";
                                         return;
                                     }
-                                    
+                                                                        
                                     snapshot.forEach((doc) => {
                                         propuestas.push({
                                             id: doc.id,
@@ -1426,20 +1442,13 @@
                 })
                 
                 .then(() => {
-                        // Actualizar la interfaz
-                        propuestas[propuestaIndex].votos++;
-                        mostrarCargando(false);
-                        
-                        // Ocultar pantalla de votación
-                        votarForm.style.display = "none";
-                        
-                        // Mostrar pantalla para proponer nombre
-                        proponerForm.style.display = "block";
-                        proponerForm.classList.add('fade-in');
-                        
-                        // Actualizar barra de progreso
-                        progressBar.style.width = "100%";
-                    })
+    // Actualizar la interfaz
+    propuestas[propuestaIndex].votos++;
+    mostrarCargando(false);
+    
+    // Mostrar modal de confirmación
+    mostrarConfirmacionModal();
+})
 
                 .catch((error) => {
                     mostrarCargando(false);
@@ -1633,7 +1642,7 @@
                 
                 // Limpiar mensajes de éxito
                 propuestaSuccess.textContent = "";
-                votoSuccess.textContent = "";
+              
                 
                 // Añadir animación
                 loginForm.classList.add('fade-in');
@@ -1690,6 +1699,9 @@
                     bloquearScroll();
                 }
 
+
+                
+
                 // Función para cerrar el modal de confirmación
                 window.cerrarConfirmacion = function() {
                     const confirmacionModal = document.getElementById('confirmacion-modal');
@@ -1741,11 +1753,12 @@
 
 
 <!-- Modal de confirmación de participación -->
+<!-- Modal de confirmación de participación -->
 <div id="confirmacion-modal" class="modal">
     <div class="modal-content">
         <h2>¡Gracias por participar!</h2>
-        <p>Tu voto y tu nombre propuesto han sido registrados correctamente.</p>
-        <p>Puedes ver tu propuesta y todas las demás en la pantalla principal usando la opción "Ver propuestas actuales".</p>
+        <p>Tu participación ha sido registrada correctamente.</p>
+        <p>Puedes ver todas las propuestas en la pantalla principal usando la opción "Ver propuestas actuales".</p>
         <div class="modal-buttons">
             <button class="close-btn" onclick="cerrarConfirmacion()">Cerrar</button>
         </div>
