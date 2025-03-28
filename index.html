@@ -737,8 +737,8 @@
                 <!-- Aquí se mostrarán los nombres propuestos dinámicamente -->
             </div>
             
-            <button id="enviar-voto">Enviar Voto</button>
-            <button id="proponer-propio" class="secondary-btn">Proponer un nombre nuevo</button>
+            <button id="enviar-voto">Votar por una propuesta</button>
+            <button id="proponer-propio" class="secondary-btn">Votaré por la propuesta que yo ponga</button>
             <button id="cancelar-voto" class="secondary-btn">Cancelar y volver</button>
         </div>
     
@@ -858,8 +858,10 @@
            
             
             // Variables globales
+           // Variables globales
             let propuestas = [];
             let empleadoActual = '';
+            let yaVoto = false; // Nueva variable para rastrear si ya votó
 
 
             // Cadena de tiendas
@@ -1360,9 +1362,10 @@ document.getElementById('proponer-propio').addEventListener('click', mostrarPant
                         }
                         
                         // Crear nueva propuesta en Firestore
+                    // Crear nueva propuesta en Firestore
                         addDoc(propuestasRef, {
                             nombre: nuevaPropuesta,
-                            votos: 1,
+                            votos: yaVoto ? 0 : 1, // Si ya votó, asignar 0 votos; si no, asignar 1 voto
                             fechaCreacion: serverTimestamp()
                         })
                         .then((docRef) => {
@@ -1446,11 +1449,22 @@ document.getElementById('proponer-propio').addEventListener('click', mostrarPant
     propuestas[propuestaIndex].votos++;
     mostrarCargando(false);
     
-    // Mostrar modal de confirmación
-    mostrarConfirmacionModal();
-})
+    // Marcar que ya votó
+    yaVoto = true;
+    
+    // Ocultar pantalla de votación
+    votarForm.style.display = "none";
+    
+    // Mostrar pantalla para proponer nombre
+    proponerForm.style.display = "block";
+    proponerForm.classList.add('fade-in');
+    
+    // Actualizar barra de progreso
+    progressBar.style.width = "100%";
+})       
 
-                .catch((error) => {
+
+.catch((error) => {
                     mostrarCargando(false);
                     enviarVotoBtn.disabled = false;
                     console.error("Error al registrar voto:", error);
@@ -1640,10 +1654,12 @@ document.getElementById('proponer-propio').addEventListener('click', mostrarPant
                 tiendaError.textContent = "";
                 propuestaError.textContent = "";
                 
-                // Limpiar mensajes de éxito
+               // Limpiar mensajes de éxito
                 propuestaSuccess.textContent = "";
-              
-                
+
+                // Resetear bandera de voto
+                yaVoto = false;
+
                 // Añadir animación
                 loginForm.classList.add('fade-in');
 
