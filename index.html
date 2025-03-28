@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -486,10 +486,146 @@
                             max-height: 200px;
                         }
                     }
+
+
+
+                    /* Estilos para el botón "¿Cómo participar?" */
+.help-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+.help-button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* Estilos para la ventana modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.modal p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.modal ul {
+    margin-bottom: 15px;
+    margin-left: 20px;
+}
+
+.modal ul li {
+    margin-bottom: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.whatsapp-btn {
+    background-color: #25D366;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: var(--transition);
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.whatsapp-btn:hover {
+    background-color: #128C7E;
+    transform: translateY(-2px);
+}
+
+.close-btn {
+    background-color: #f8f9fa;
+    color: var(--dark-text);
+    border: 1px solid #e1e5eb;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    background-color: #e9ecef;
+}
+
+/* Adaptación para móviles */
+@media (max-width: 576px) {
+    .help-button {
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    .modal-content {
+        width: 85%;
+        padding: 20px;
+    }
+}
     </style>
 </head>
 <body>
     <div class="container fade-in">
+
+        <!-- Botón de ayuda "¿Cómo participar?" -->
+<button id="help-button" class="help-button">¿Cómo participar?</button>
+
+
         <div class="logo">
              <img src="logograndeponlenombrealaapp.jpg" alt="Logo VotApp" class="logo-img">
             <div class="logo-subtitle">¡Sistema de Votación para la App del Gerente!</div>
@@ -1430,7 +1566,37 @@
 
 
             }
+
+
+
+
+
+            // Funcionalidad del modal de ayuda
+                const helpButton = document.getElementById('help-button');
+                const helpModal = document.getElementById('help-modal');
+
+                helpButton.addEventListener('click', function() {
+                    helpModal.style.display = 'block';
+                });
+
+                // Función para cerrar el modal
+                window.cerrarModal = function() {
+                    helpModal.style.display = 'none';
+                };
+
+                // Cerrar el modal si se hace clic fuera del contenido
+                window.addEventListener('click', function(event) {
+                    if (event.target === helpModal) {
+                        helpModal.style.display = 'none';
+                    }
+                });
+
         }
+    
+    
+    
+    
+    //
     </script>
 
 
@@ -1438,7 +1604,31 @@
 <div id="tooltip-global" class="tooltip-global">
     <div class="tooltip-content"></div>
 </div>
-
+<!-- Modal de "¿Cómo participar?" -->
+<div id="help-modal" class="modal">
+    <div class="modal-content">
+        <h2>¿Cómo participar en el concurso?</h2>
+        <p>Ponle nombre a la app del gerente</p>
+        <p>Ingresa tu número de colaborador, tu nombre completo y selecciona el nombre de tu tienda. Luego da clic en <strong>Continuar</strong>.</p>
+        <ol>
+            <li>Se te mostrarán dos opciones:
+                <ul>
+                    <li>Proponer un nombre para la app</li>
+                    <li>Votar por un nombre existente</li>
+                </ul>
+            </li>
+            <li>Si eliges <strong>proponer un nombre</strong>, solo escríbelo y da clic en <strong>Guardar</strong>.</li>
+            <li>Si eliges <strong>votar por un nombre</strong>, podrás ver las propuestas de otros compañeros y seleccionar la que más te guste.</li>
+        </ol>
+        <p>Recuerda: solo puedes proponer un nombre y votar una sola vez.</p>
+        <p>Gana el nombre que reciba más votos. En caso de empate, ganará el que haya alcanzado primero la puntuación ganadora.</p>
+        <p>Si tienes dudas, ingresa al grupo de WhatsApp de la app del gerente haciendo clic aquí:</p>
+        <div class="modal-buttons">
+            <a href="https://chat.whatsapp.com/F73Xe1xJAdWDOOVs7XkljO" class="whatsapp-btn" target="_blank">Grupo de WhatsApp</a>
+            <button class="close-btn" onclick="cerrarModal()">Cerrar</button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
