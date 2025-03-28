@@ -715,26 +715,10 @@
             <button id="ver-propuestas" class="secondary-btn">Ver propuestas actuales</button>
         </div>
         
-        <div id="opciones-form" class="options">
-            <h2>¿Qué deseas hacer?</h2>
-            
-            <div class="radio-group">
-                <label class="radio-option">
-                    <input type="radio" name="opcion" value="proponer"> 
-                    Proponer un nombre para la app
-                </label>
-                
-                <label class="radio-option">
-                    <input type="radio" name="opcion" value="votar"> 
-                    Votar por un nombre existente
-                </label>
-            </div>
-            
-            <button id="seleccionar-opcion">Continuar</button>
-        </div>
+   
         
         <div id="proponer-form" class="options">
-            <h2>Proponer un Nombre</h2>
+            <h2>Ahora propón un nombre para la app</h2>
             
             <div class="form-group">
                 <label for="propuesta">Nombre para la App</label>
@@ -1169,7 +1153,8 @@
                 }
                                 
                // Dentro de la función validarLogin(), reemplaza este bloque:
-                if (esValido) {
+               if (esValido) 
+               {
                     // Guardar el ID del empleado actual
                     empleadoActual = empleadoInput.value;
                     
@@ -1188,15 +1173,53 @@
                                 return;
                             }
                             
-                            // Ocultar login y mostrar opciones
+                            // Ocultar login y mostrar directamente la pantalla de votación
                             loginForm.style.display = "none";
-                            opcionesForm.style.display = "block";
                             
-                            // Actualizar barra de progreso
-                            progressBar.style.width = "66%";
+                            // Cargar propuestas desde Firestore
+                            mostrarCargando(true);
+                            const propuestasRef = collection(db, 'propuestas');
+                            const q = query(propuestasRef, orderBy('votos', 'desc'));
                             
-                            // Animación
-                            opcionesForm.classList.add('fade-in');
+                            getDocs(q)
+                                .then((snapshot) => {
+                                    propuestas = [];
+                                    
+                                    if (snapshot.empty) {
+                                        mostrarCargando(false);
+                                        alert("No hay propuestas disponibles para votar. Primero debes proponer un nombre.");
+                                        
+                                        // Si no hay propuestas, mostrar directamente el formulario para proponer
+                                        proponerForm.style.display = "block";
+                                        proponerForm.classList.add('fade-in');
+                                        progressBar.style.width = "100%";
+                                        return;
+                                    }
+                                    
+                                    snapshot.forEach((doc) => {
+                                        propuestas.push({
+                                            id: doc.id,
+                                            ...doc.data()
+                                        });
+                                    });
+                                    
+                                    cargarPropuestas();
+                                    mostrarCargando(false);
+                                    
+                                    // Actualizar título del formulario de votación
+                                    document.querySelector('#votar-form h2').textContent = "Vota por un nombre";
+                                    
+                                    votarForm.style.display = "block";
+                                    votarForm.classList.add('fade-in');
+                                    
+                                    // Actualizar barra de progreso
+                                    progressBar.style.width = "66%";
+                                })
+                                .catch((error) => {
+                                    mostrarCargando(false);
+                                    console.error("Error al cargar propuestas:", error);
+                                    alert("Error al cargar las propuestas. Intenta nuevamente.");
+                                });
                         })
                         .catch((error) => {
                             mostrarCargando(false);
@@ -1342,15 +1365,12 @@
                             mostrarCargando(false);
                             propuestaInput.value = "";
                             propuestaError.textContent = "";
-                            propuestaSuccess.textContent = "¡Tu propuesta ha sido guardada y se registró tu voto!";
                             
-                            // Después de 3 segundos, regresar al inicio
-                            setTimeout(() => {
-                                reiniciarFormulario();
-                            }, 3000);
+                            // Mostrar modal de confirmación en lugar del mensaje de éxito
+                            mostrarConfirmacionModal();
                         })
-                        .catch((error) => {
-                            mostrarCargando(false);
+                             .catch((error) => {
+                                                    mostrarCargando(false);
                             enviarPropuestaBtn.disabled = false;
                             console.error("Error al guardar propuesta:", error);
                             alert("Error al guardar la propuesta. Intenta nuevamente.");
@@ -1404,18 +1424,23 @@
                         fechaVoto: serverTimestamp()
                     });
                 })
+                
                 .then(() => {
-                    // Actualizar la interfaz
-                    propuestas[propuestaIndex].votos++;
-                    mostrarCargando(false);
-                    votoSuccess.textContent = "¡Tu voto ha sido registrado con éxito!";
-                    cargarPropuestas();
-                    
-                    // Después de 3 segundos, regresar al inicio
-                    setTimeout(() => {
-                        reiniciarFormulario();
-                    }, 3000);
-                })
+                        // Actualizar la interfaz
+                        propuestas[propuestaIndex].votos++;
+                        mostrarCargando(false);
+                        
+                        // Ocultar pantalla de votación
+                        votarForm.style.display = "none";
+                        
+                        // Mostrar pantalla para proponer nombre
+                        proponerForm.style.display = "block";
+                        proponerForm.classList.add('fade-in');
+                        
+                        // Actualizar barra de progreso
+                        progressBar.style.width = "100%";
+                    })
+
                 .catch((error) => {
                     mostrarCargando(false);
                     enviarVotoBtn.disabled = false;
@@ -1653,6 +1678,24 @@
                     e.stopPropagation();
                 });
 
+
+                // Función para mostrar el modal de confirmación
+                function mostrarConfirmacionModal() {
+                    const confirmacionModal = document.getElementById('confirmacion-modal');
+                    confirmacionModal.style.display = 'block';
+                    bloquearScroll();
+                }
+
+                // Función para cerrar el modal de confirmación
+                window.cerrarConfirmacion = function() {
+                    const confirmacionModal = document.getElementById('confirmacion-modal');
+                    confirmacionModal.style.display = 'none';
+                    permitirScroll();
+                    
+                    // Redirigir a la pantalla principal
+                    reiniciarFormulario();
+                };
+
         }
     
     
@@ -1688,6 +1731,19 @@
         <div class="modal-buttons">
             <a href="https://chat.whatsapp.com/F73Xe1xJAdWDOOVs7XkljO" class="whatsapp-btn" target="_blank">Grupo de WhatsApp</a>
             <button class="close-btn" onclick="cerrarModal()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de confirmación de participación -->
+<div id="confirmacion-modal" class="modal">
+    <div class="modal-content">
+        <h2>¡Gracias por participar!</h2>
+        <p>Tu voto y tu nombre propuesto han sido registrados correctamente.</p>
+        <p>Puedes ver tu propuesta y todas las demás en la pantalla principal usando la opción "Ver propuestas actuales".</p>
+        <div class="modal-buttons">
+            <button class="close-btn" onclick="cerrarConfirmacion()">Cerrar</button>
         </div>
     </div>
 </div>
