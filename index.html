@@ -43,6 +43,7 @@
             padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            position: relative; /* Añadir esta línea si no existe */
         }
         
         h1 {
@@ -490,20 +491,21 @@
 
 
                     /* Estilos para el botón "¿Cómo participar?" */
-.help-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: var(--transition);
-    z-index: 10;
-}
+                    .help-button {
+                    position: absolute;
+                    top: 20px;
+                    right: 20px;
+                    background-color: var(--primary-color);
+                    color: white;
+                    border: none;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: var(--transition);
+                    z-index: 10;
+                    width: auto; /* Añadir esta línea para que no ocupe todo el ancho */
+                }
 
 .help-button:hover {
     background-color: var(--primary-hover);
@@ -622,14 +624,13 @@
 <body>
     <div class="container fade-in">
 
-        <!-- Botón de ayuda "¿Cómo participar?" -->
-<button id="help-button" class="help-button">¿Cómo participar?</button>
-
-
-        <div class="logo">
-             <img src="logograndeponlenombrealaapp.jpg" alt="Logo VotApp" class="logo-img">
-            <div class="logo-subtitle">¡Sistema de Votación para la App del Gerente!</div>
-        </div>
+  <!-- Coloca el botón aquí, antes del div de logo -->
+  <button id="help-button" class="help-button">¿Cómo participar?</button>
+    
+  <div class="logo">
+      <img src="logograndeponlenombrealaapp.jpg" alt="Logo VotApp" class="logo-img">
+      <div class="logo-subtitle">¡Sistema de Votación para la App del Gerente!</div>
+  </div>
         
         <div class="progress-bar">
             <div class="progress" id="progress"></div>
