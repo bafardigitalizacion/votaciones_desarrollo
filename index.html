@@ -521,7 +521,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow: hidden; /* CAMBIA ESTO: de auto a hidden */
     background-color: rgba(0,0,0,0.4);
 }
 
@@ -615,9 +615,18 @@
     }
     
     .modal-content {
-        width: 85%;
-        padding: 20px;
-    }
+    background-color: #fefefe;
+    margin: 10% auto; /* CAMBIA ESTO: de 15% a 10% */
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    max-height: 80vh; /* AÑADE ESTO: limita la altura */
+    overflow-y: auto; /* AÑADE ESTO: permite scroll solo dentro del contenido */
+    animation: modalFadeIn 0.3s ease;
+}
 }
     </style>
 </head>
@@ -1569,27 +1578,43 @@
             }
 
 
-
-
-
-            // Funcionalidad del modal de ayuda
+           // Funcionalidad del modal de ayuda
                 const helpButton = document.getElementById('help-button');
                 const helpModal = document.getElementById('help-modal');
 
+                // Función para bloquear el scroll de la página
+                function bloquearScroll() {
+                    document.body.style.overflow = 'hidden';
+                }
+
+                // Función para permitir el scroll de la página
+                function permitirScroll() {
+                    document.body.style.overflow = '';
+                }
+
+                // Abrir el modal y bloquear scroll
                 helpButton.addEventListener('click', function() {
                     helpModal.style.display = 'block';
+                    bloquearScroll();  // AÑADE ESTO
                 });
 
                 // Función para cerrar el modal
                 window.cerrarModal = function() {
                     helpModal.style.display = 'none';
+                    permitirScroll();  // AÑADE ESTO
                 };
 
                 // Cerrar el modal si se hace clic fuera del contenido
                 window.addEventListener('click', function(event) {
                     if (event.target === helpModal) {
                         helpModal.style.display = 'none';
+                        permitirScroll();  // AÑADE ESTO
                     }
+                });
+
+                // AÑADE ESTO: Evitar que el scroll dentro del modal afecte al fondo
+                document.querySelector('.modal-content').addEventListener('wheel', function(e) {
+                    e.stopPropagation();
                 });
 
         }
