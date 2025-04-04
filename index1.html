@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados Finales - App del Gerente</title>
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3a56e8;
+            --secondary-color: #7209b7;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --gray-text: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+        
+        .subtitle {
+            color: var(--dark-text);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .results-title {
+            color: #7209b7;
+            font-size: 1.4rem;
+            margin: 25px 0 20px;
+            font-weight: 500;
+        }
+        
+        .logo-img {
+            width: 180px;
+            height: auto;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        
+        .resultados-list {
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-top: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #f0f0f0;
+        }
+        
+        .resultados-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .resultados-list::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .resultados-list::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 10px;
+        }
+        
+        .resultado-item {
+            background: var(--light-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 5px solid var(--primary-color);
+            transition: var(--transition);
+            text-align: left;
+        }
+        
+        .resultado-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .nombre-propuesta {
+            font-weight: 500;
+            color: var(--dark-text);
+            flex: 1;
+        }
+        
+        .votos {
+            font-weight: bold;
+            color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        
+        .votos:hover {
+            background: rgba(67, 97, 238, 0.2);
+        }
+        
+        .votos.active {
+            background: rgba(67, 97, 238, 0.4);
+            color: #fff;
+        }
+        
+        .tooltip-global {
+            position: fixed;
+            display: none;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 9999;
+            max-width: 180px;
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        .tooltip-global:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--primary-color) transparent transparent transparent;
+        }
+        
+        .thanks-title {
+            color: #7209b7;
+            font-size: 1.6rem;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .vote-ended {
+            color: #7209b7;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Media queries para responsividad */
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .results-title {
+                font-size: 1.2rem;
+            }
+            
+            .logo-img {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in">
+        <img src="logo-app-gerente.png" alt="Logo App del Gerente" class="logo-img">
+        
+        <h1>¡Sistema de Votación para la App del Gerente!</h1>
+        
+        <div class="thanks-title">¡Gracias por Participar!</div>
+        <div class="vote-ended">La votación ha finalizado</div>
+        
+        <div class="results-title">Estos son los resultados finales</div>
+        
+        <div id="resultados-finales" class="resultados-list">
+            <!-- Los resultados se cargarán dinámicamente desde JavaScript -->
+        </div>
+    </div>
+
+    <!-- Tooltip global para mostrar información de propuestas -->
+    <div id="tooltip-global" class="tooltip-global">
+        <div class="tooltip-content"></div>
+    </div>
+
+    <!-- Incluir Firebase (Versión modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        
+        // Tu configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAFMp3BbMM-indcX7FWlrTFFoEX4vG-Kt8",
+            authDomain: "sistemavotaciones-b0bba.firebaseapp.com",
+            projectId: "sistemavotaciones-b0bba",
+            storageBucket: "sistemavotaciones-b0bba.firebasebasestorage.app",
+            messagingSenderId: "203898236463",
+            appId: "1:203898236463:web:18a14b0b282cc43544e0da"
+        };
+        
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Exponer funciones de Firebase al ámbito global para poder usarlas
+        window.firebaseModules = {
+            db,
+            collection,
+            getDocs,
+            query,
+            where,
+            orderBy
+        };
+    </script>
+
+    <script>
+        // Esperar a que el DOM y Firebase estén listos
+        document.addEventListener('DOMContentLoaded', () => {
+            // Esperar a que los módulos de Firebase estén disponibles
+            setTimeout(inicializarApp, 500);
+        });
+
+        function inicializarApp() {
+            // Obtener los módulos de Firebase
+            const { 
+                db, 
+                collection, 
+                getDocs,
+                query, 
+                where, 
+                orderBy
+            } = window.firebaseModules || {};
+            
+            // Verificar que Firebase esté cargado
+            if (!db) {
+                console.error("Firebase no se ha cargado correctamente.");
+                // Cargar datos de ejemplo en caso de error
+                cargarResultadosEjemplo();
+                return;
+            }
+            
+            // Cargar los resultados desde Firestore
+            cargarResultados();
+            
+            // Variable global para controlar el estado del tooltip
+            let tooltipActivo = null;
+            
+            // Función para cargar los resultados desde Firebase
+            async function cargarResultados() {
+                try {
+                    const propuestasRef = collection(db, 'propuestas');
+                    const q = query(propuestasRef, orderBy('votos', 'desc'));
+                    const snapshot = await getDocs(q);
+                    
+                    const resultadosContainer = document.getElementById('resultados-finales');
+                    resultadosContainer.innerHTML = "";
+                    
+                    if (snapshot.empty) {
+                        // Si no hay resultados, mostrar datos de ejemplo
+                        cargarResultadosEjemplo();
+                        return;
+                    }
+                    
+                    // Crear elementos para cada resultado
+                    snapshot.forEach((doc) => {
+                        const propuesta = {
+                            id: doc.id,
+                            ...doc.data()
+                        };
+                        
+                        const propuestaElement = document.createElement('div');
+                        propuestaElement.className = 'resultado-item';
+                        
+                        propuestaElement.innerHTML = `
+                            <div class="nombre-propuesta">${propuesta.nombre}</div>
+                            <span class="votos" data-propuesta="${propuesta.id}">${propuesta.votos} votos</span>
+                        `;
+                        
+                        resultadosContainer.appendChild(propuestaElement);
+                    });
+                    
+                    // Agregar eventos de clic a los botones de votos
+                    document.querySelectorAll('.votos').forEach(elemento => {
+                        elemento.addEventListener('click', toggleTooltip);
+                    });
+                    
+                } catch (error) {
+                    console.error("Error al cargar resultados:", error);
+                    // En caso de error, cargar datos de ejemplo
+                    cargarResultadosEjemplo();
+                }
+            }
+            
+            // Función para cargar datos de ejemplo en caso de error
+            function cargarResultadosEjemplo() {
+                const resultadosEjemplo = [
+                    { id: '1', nombre: 'Bafar OneDesk (todo en un solo lugar)', votos: 221 },
+                    { id: '2', nombre: 'OPTIMART(capacidad de resolver las cosas ,mejor y más eficiente)', votos: 146 },
+                    { id: '3', nombre: 'Gestor de líderes', votos: 18 },
+                    { id: '4', nombre: 'Gerente 360', votos: 16 }
+                ];
+                
+                const resultadosContainer = document.getElementById('resultados-finales');
+                resultadosContainer.innerHTML = "";
+                
+                resultadosEjemplo.forEach(propuesta => {
+                    const propuestaElement = document.createElement('div');
+                    propuestaElement.className = 'resultado-item';
+                    
+                    propuestaElement.innerHTML = `
+                        <div class="nombre-propuesta">${propuesta.nombre}</div>
+                        <span class="votos" data-propuesta="${propuesta.id}">${propuesta.votos} votos</span>
+                    `;
+                    
+                    resultadosContainer.appendChild(propuestaElement);
+                });
+                
+                // Agregar eventos de clic a los botones de votos
+                document.querySelectorAll('.votos').forEach(elemento => {
+                    elemento.addEventListener('click', toggleTooltip);
+                });
+            }
+            
+            // Función para obtener la información del proponente de una propuesta
+            async function obtenerInfoProponente(propuestaId) {
+                try {
+                    const votosRef = collection(db, 'votos');
+                    const q = query(votosRef, where('propuestaId', '==', propuestaId));
+                    const snapshot = await getDocs(q);
+                    
+                    // Buscar el primer voto para esta propuesta (debería ser el del proponente)
+                    if (!snapshot.empty) {
+                        const votoData = snapshot.docs[0].data();
+                        return {
+                            nombre: votoData.nombre || 'Anónimo',
+                            tienda: votoData.tienda || 'No especificada',
+                            fechaVoto: votoData.fechaVoto || null
+                        };
+                    }
+                    
+                    // Si no se encuentra información en Firebase, devolver datos de ejemplo
+                    return {
+                        nombre: 'Participante',
+                        tienda: 'Tienda ejemplo',
+                        fechaVoto: { seconds: Date.now() / 1000 }
+                    };
+                } catch (error) {
+                    console.error("Error al obtener información del proponente:", error);
+                    // Devolver datos de ejemplo en caso de error
+                    return {
+                        nombre: 'Participante',
+                        tienda: 'Tienda ejemplo',
+                        fechaVoto: { seconds: Date.now() / 1000 }
+                    };
+                }
+            }
+            
+            // Función para formatear fechas
+            function formatearFecha(timestamp) {
+                if (!timestamp) return 'Fecha desconocida';
+                
+                const fecha = new Date(timestamp.seconds * 1000);
+                return fecha.toLocaleDateString('es-ES', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+            
+            // Función para mostrar/ocultar tooltip
+            async function toggleTooltip(event) {
+                event.stopPropagation(); // Detener propagación del evento
+                
+                const propuestaId = this.getAttribute('data-propuesta');
+                const tooltipGlobal = document.getElementById('tooltip-global');
+                const tooltipContent = tooltipGlobal.querySelector('.tooltip-content');
+                
+                // Si el elemento actualmente activo es este mismo, solo ocultar
+                if (tooltipActivo === this) {
+                    tooltipGlobal.style.display = 'none';
+                    this.classList.remove('active');
+                    tooltipActivo = null;
+                    return;
+                }
+                
+                // Remover la clase active de cualquier otro botón
+                document.querySelectorAll('.votos.active').forEach(el => {
+                    el.classList.remove('active');
+                });
+                
+                // Buscar la información del proponente
+                const info = await obtenerInfoProponente(propuestaId);
+                
+                if (!info) {
+                    console.error('No se pudo obtener información del proponente');
+                    return;
+                }
+                
+                // Actualizar contenido del tooltip
+                tooltipContent.innerHTML = `
+                    Propuesto por: ${info.nombre}<br>
+                    Tienda: ${info.tienda}<br>
+                    Fecha: ${formatearFecha(info.fechaVoto)}
+                `;
+                
+                // Encontrar el elemento resultado-item padre
+                let resultadoItem = this.closest('.resultado-item');
+                
+                // Posicionar tooltip en el centro del elemento resultado-item
+                const rect = resultadoItem.getBoundingClientRect();
+                tooltipGlobal.style.left = (rect.left + rect.width/2) + 'px';
+                tooltipGlobal.style.top = (rect.top + rect.height/2 - 60) + 'px'; // Centrado verticalmente
+                tooltipGlobal.style.transform = 'translateX(-50%)';
+                
+                // Mostrar tooltip
+                tooltipGlobal.style.display = 'block';
+                
+                // Establecer este elemento como activo
+                this.classList.add('active');
+                tooltipActivo = this;
+            }
+            
+            // Cerrar tooltip al hacer clic en cualquier parte
+            document.addEventListener('click', function(event) {
+                if (!event.target.classList.contains('votos')) {
+                    const tooltipGlobal = document.getElementById('tooltip-global');
+                    tooltipGlobal.style.display = 'none';
+                    
+                    document.querySelectorAll('.votos.active').forEach(voto => {
+                        voto.classList.remove('active');
+                    });
+                    
+                    tooltipActivo = null;
+                }
+            });
+            
+            // Cerrar tooltip al hacer scroll
+            window.addEventListener('scroll', function() {
+                const tooltipGlobal = document.getElementById('tooltip-global');
+                if (tooltipGlobal.style.display === 'block') {
+                    tooltipGlobal.style.display = 'none';
+                    
+                    document.querySelectorAll('.votos.active').forEach(voto => {
+                        voto.classList.remove('active');
+                    });
+                    
+                    tooltipActivo = null;
+                }
+            });
+            
+            // También cerrar al hacer scroll en los contenedores de resultados
+            document.getElementById('resultados-finales').addEventListener('scroll', function() {
+                const tooltipGlobal = document.getElementById('tooltip-global');
+                tooltipGlobal.style.display = 'none';
+                
+                document.querySelectorAll('.votos.active').forEach(voto => {
+                    voto.classList.remove('active');
+                });
+                
+                tooltipActivo = null;
+            });
+        }
+    </script>
+</body>
+</html>
