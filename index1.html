@@ -68,10 +68,26 @@
         }
         
         .logo-img {
-            width: 180px;
+            max-width: 245px;
+            width: 60%;
             height: auto;
-            margin: 0 auto 20px;
+            margin: 0 auto 10px;
             display: block;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        /* Ajuste para logo en dispositivos móviles */
+        @media (max-width: 576px) {
+            .logo-img {
+                width: 50%;
+                max-width: 196px;
+            }
         }
         
         .resultados-list {
@@ -207,9 +223,9 @@
 </head>
 <body>
     <div class="container fade-in">
-        <img src="logo-app-gerente.png" alt="Logo App del Gerente" class="logo-img">
+        <img src="logograndeponlenombrealaapp.jpg" alt="Logo App del Gerente" class="logo-img">
         
-        <h1>¡Sistema de Votación para la App del Gerente!</h1>
+        <div class="logo-subtitle">¡Sistema de Votación para la App del Gerente!</div>
         
         <div class="thanks-title">¡Gracias por Participar!</div>
         <div class="vote-ended">La votación ha finalizado</div>
